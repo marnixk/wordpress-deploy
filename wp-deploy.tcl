@@ -101,7 +101,19 @@ foreach archive $archiveFiles {
 # setup wp-content/uploads folder symlink
 foreach folder [glob *] {
 	puts "Linking content folder for `$folder`"
-	exec ln -s $upload_folder $folder/wp-content/uploads
+	exec rm -rf "$folder/wp-content/uploads"
+	exec ln -s $upload_folder "$folder/wp-content/uploads"
+
+	# create wp-config
+	set wpConfig "<?php
+		define('WP_HOME', 'http://$folder.$host_root');
+		define('WP_SITEURL', 'http://$folder.$host_root');
+		include('../../wp-config.php');
+	"
+
+	set wpConfigFp [open "$folder/wp-config.php" w]
+	puts $wpConfigFp $wpConfig
+	close $wpConfigFp 
 }
 
 cd $working_dir
@@ -144,6 +156,7 @@ foreach item $items {
 
 	}]
 }
+
 
 # write hostfile
 set vhostFp [open $vhost_file "w"]
