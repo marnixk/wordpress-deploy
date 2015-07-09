@@ -108,7 +108,7 @@ foreach folder [glob *] {
 	set wpConfig "<?php
 		define('WP_HOME', 'http://$folder.$host_root');
 		define('WP_SITEURL', 'http://$folder.$host_root');
-		include('../../wp-config.php');
+		include('$working_dir/wp-config.php');
 	"
 
 	set wpConfigFp [open "$folder/wp-config.php" w]
