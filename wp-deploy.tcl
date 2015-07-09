@@ -71,39 +71,27 @@ proc export_to {gitFolder archiveFolder branchName} {
 	cd $cwd
 }
 
+
 # get all branches
-# puts "Are you sure you want to deploy from '$git_root' to into '$version_folder'? \[y\]"
-
-# gets stdin line
-# 
-# if {$line != "y" && $line != {}} then {
-# 	puts "\nOkay. Exiting."
-# 	exit;
-# }
-
 set branchNames [get_branches $git_root]
+
+# get all tags
 set tags [get_tags $git_root]
 
-lappend archiveFiles
-
+# concatenate the two
 set items [concat $branchNames $tags]
 
+# export into archives
+lappend archiveFiles
 foreach branch $items {
 	puts "Exporting branch/tag: $branch"
 	export_to $git_root $archive_folder $branch
 	lappend archiveFiles "$archive_folder/$branch.tar.gz"
 }
 
-# foreach tag $tags {
-# 	puts "Exporting tag: $tag"
-# 	export_to $git_root $archive_folder $tag
-# 	lappend archiveFiles "$archive_folder/$tag.tar.gz"
-# }
 
-
+# unpack all archives into version_folder
 cd $version_folder
-
-# unpack all archives
 foreach archive $archiveFiles {
 	puts -nonewline "Unpacking version: $archive .. "
 	exec tar -xvzf $archive 
